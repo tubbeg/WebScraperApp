@@ -36,7 +36,7 @@ namespace WebScraperApp
         }
     }
 
-    public class WebScraperDummy
+    public class WebScraperDummy : IWebScraper
     {
         private readonly string _pageContents;
         public WebScraperDummy()
