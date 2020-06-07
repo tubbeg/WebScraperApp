@@ -30,9 +30,15 @@ namespace WebScraperApp
             _htmlDocument.LoadHtml(pageContents);
         }
 
-        public void getNode(string query) 
+        private HtmlNode GetNode(string query) 
         {
-        
+            return _htmlDocument.DocumentNode.SelectSingleNode(query);
+        }
+
+        //(//div[contains(@class,'pb-f-homepage-hero')]//h3)[1]
+        public string GetNodeContent(string query)
+        {
+            return GetNode(query).InnerText;
         }
     }
 
@@ -53,6 +59,11 @@ namespace WebScraperApp
         {
             return;
         }
+
+        public string GetNodeContent(string query)
+        {
+            return "";
+        }
     }
 
     interface IWebScraper
@@ -60,5 +71,7 @@ namespace WebScraperApp
         public Task<string> Scrape(string pageUrl);
 
         public void LoadDocument(string pageContents);
+
+        public string GetNodeContent(string query);
     }
 }
