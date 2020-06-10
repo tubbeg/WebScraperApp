@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +12,8 @@ namespace WebScraperApp
 {
     class WebScraper : IWebScraper
     {
-        private readonly HttpClient _client;
-        private readonly HtmlDocument _htmlDocument;
+        private HttpClient _client;
+        private HtmlDocument _htmlDocument;
 
         public WebScraper()
         {
@@ -32,13 +34,21 @@ namespace WebScraperApp
 
         private HtmlNode GetNode(string query) 
         {
-            return _htmlDocument.DocumentNode.SelectSingleNode(query);
+            var result = _htmlDocument.DocumentNode.SelectSingleNode(query);
+            return result;
         }
 
         //(//div[contains(@class,'pb-f-homepage-hero')]//h3)[1]
-        public string GetNodeContent(string query)
+        public string GetNodeText(string query)
         {
             return GetNode(query).InnerText;
+        }
+
+        public IEnumerable<string> GetAllImageSources()
+        {
+            return _htmlDocument.DocumentNode.Descendants("img")
+                .Select(e => e.GetAttributeValue("src", null))
+                .Where(s => !String.IsNullOrEmpty(s));
         }
     }
 
@@ -60,9 +70,14 @@ namespace WebScraperApp
             return;
         }
 
-        public string GetNodeContent(string query)
+        public string GetNodeText(string query)
         {
-            return "";
+            return "node content return value";
+        }
+
+        public IEnumerable<string> GetAllImageSources()
+        {
+            return new List<string>();
         }
     }
 
@@ -72,6 +87,7 @@ namespace WebScraperApp
 
         public void LoadDocument(string pageContents);
 
-        public string GetNodeContent(string query);
+        public string GetNodeText(string query);
+        public IEnumerable<string> GetAllImageSources();
     }
 }

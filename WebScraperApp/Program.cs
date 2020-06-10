@@ -8,8 +8,11 @@ namespace WebScraperApp
         async static Task Main(string[] args)
         {
             var webScraper = new WebScraper();
-            var myResult = await webScraper.Scrape("http://google.com");
-            Console.WriteLine(myResult);
+            var myResult = await webScraper.Scrape("http://reddit.com/r/all");
+            webScraper.LoadDocument(myResult);
+            var myList = webScraper.GetAllImageSources();
+            foreach(string image in myList)
+                Console.WriteLine(image);
         }
     }
 }
